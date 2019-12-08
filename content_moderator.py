@@ -4,7 +4,7 @@ import operator
 
 class ContentModerator():
 	def __init__(self):
-		key_file = open('./GoogleKey.txt')
+		key_file = open('../GoogleKey.txt')
 		self.api_key = key_file.readline()
 		self.requestedAttributes = ['TOXICITY', 'SEVERE_TOXICITY', 'IDENTITY_ATTACK', 'INSULT', 'PROFANITY', 'THREAT', 'SEXUALLY_EXPLICIT', 'FLIRTATION']
 
