@@ -11,7 +11,19 @@ class Chatbot():
 			if text == 'exit':
 				print("Stay moderate!")
 				return
-			output = self.cm.getAttributeScores(text)
+			if text == 'clear':
+				self.cm.clear()
+				continue
+			if text == 'moderate_off':
+				self.cm.off()
+				continue
+			if text == 'moderate_on':
+				self.cm.on()
+				continue
+			if text == 'current':
+				print(self.cm.current())
+				continue
+			output = self.cm.makeDecision(text)
 			print(output)
 
 
