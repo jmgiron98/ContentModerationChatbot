@@ -51,11 +51,14 @@ class ContentModerator():
 		categories = set()
 		if attributeScores['THREAT'] > 0.95:
 			categories.add('Threat')
+		if attributeScores['IDENTITY_ATTACK'] > 0.90:
+			categories.add('Hate Speech')
+		if attributeScores['THREAT'] > 0.95 and attributeScores['IDENTITY_ATTACK'] > 0.90:
+			categories.add('Terrorism')
+			return list(categories)
 		if attributeScores['SEVERE_TOXICITY'] > 0.90:
 			categories.add('Harassment')
 			categories.add('Bullying')
-		if attributeScores['IDENTITY_ATTACK'] > 0.90:
-			categories.add('Hate Speech')
 		if attributeScores['SEXUALLY_EXPLICIT'] > 0.95:
 			categories.add('Nudity')
 		return list(categories)
