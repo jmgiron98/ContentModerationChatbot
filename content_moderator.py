@@ -30,14 +30,40 @@ class ContentModerator():
 		print(test_string)
 		if self.moderate:
 			attributes = self._getAttributeScores(" ".join(self.rollingWindow[-20:]))
-			return attributes
+			action = self._suggestedActions(attributes)
+			categories = self._suggestedCategories(attributes)
+			output = "Suggested Action: " + action + '\n' + "Suggested Categories: " + ', '.join(categories)
+			return output
 		else:
 			return ""
+
+	def _suggestedActions(self, attributeScores):
+		if attributeScores['THREAT'] > 0.95:
+			return 'Display "Threatening message detected". Suggest report and block, suggest to call the police'
+		elif attributeScores['IDENTITY_ATTACK'] > 0.90:
+			return 'Display "Hateful language detected". Suggest report and block'
+		elif attributeScores['SEVERE_TOXICITY'] > 0.90:
+			return 'Display "Toxic message detected". Suggest report and block.'
+		else:
+			return 'No action suggested'
+
+	def _suggestedCategories(self, attributeScores):
+		categories = set()
+		if attributeScores['THREAT'] > 0.95:
+			categories.add('Threat')
+		if attributeScores['SEVERE_TOXICITY'] > 0.90:
+			categories.add('Harassment')
+			categories.add('Bullying')
+		if attributeScores['IDENTITY_ATTACK'] > 0.90:
+			categories.add('Hate Speech')
+		if attributeScores['SEXUALLY_EXPLICIT'] > 0.95:
+			categories.add('Nudity')
+		return list(categories)
 
 	def _getAttributeScores(self, text):
 		response = self._makeRequest(text)
 		attributeScores = {key: value['summaryScore']['value'] for (key, value) in response['attributeScores'].items()}
-		return sorted(attributeScores.items(), key=operator.itemgetter(1))
+		return attributeScores
 
 	def _makeRequest(self, text):
 	    api_key = self.api_key
